@@ -1,46 +1,55 @@
 
 import tkinter
 import matplotlib.pyplot as plt
-import numpy as np
 from tkinter import messagebox
+from collections import Counter
 
 
-
-def bmi_calculator():
+def calculate_bmi():
     weight = weightentry.get()
     height = heightentry.get()
     fname = fnameentry.get()
     age = agespinbox.get()
 
-    global bmi_values
+    #global bmi_values
+
     bmi = (float(weight) / (float(height)**2))
     if bmi < 18.5:
-        bmi_values = 'Underweight'
-        messagebox.showwarning('BMI','Underweight: '+str(bmi))
+        category = 'Underweight'
+        messagebox.showwarning('BMI', 'Underweight: '+str(bmi))
     elif bmi >= 18.5 and bmi <= 25:
-        bmi_values = 'Normal'
-        messagebox.showwarning('BMI','Normal: '+str(bmi))
+        category = 'Normal'
+        messagebox.showwarning('BMI', 'Normal: '+str(bmi))
     elif bmi > 25 and bmi <= 30:
-        bmi_values = 'Overweight'
-        messagebox.showwarning('BMI','Overweight: '+ str(bmi))
+        category = 'Overweight'
+        messagebox.showwarning('BMI', 'Overweight: '+ str(bmi))
     elif bmi > 30:
-        bmi_values = 'Obese'
-        messagebox.showwarning('BMI','Obese: '+str(bmi))
+        category = 'Obese'
+        messagebox.showwarning('BMI', 'Obese: '+str(bmi))
+
 
     with open('bmi.txt','a') as bmiwrite:
-        bmiwrite.write('Name: '+fname+' '+'Age: '+str(age)+' '+'W: '+str(weight)+' '+'H: '+str(height)+' '+'BMI: '+bmi_values+'\n')
+        bmiwrite.write('Name: '+fname+' '+'Age: '+str(age)+' '+'W: '+str(weight)+' '+'H: '+str(height)+' '+'BMI: '+category+' '+str(bmi)+'\n')
+
+
+    categories= []
+    with open('bmi.txt', 'r') as bmiread:
+        for line in bmiread:
+            parts = line.strip().split()
+            categories.append(parts[-2])
+
+    category_counts = Counter(categories)
+    labels = list(category_counts.keys())
+    sizes = list(category_counts.values())
+
 
     print('Saved')
 
-    with open('bmi.txt','r') as bmiread:
-        bmiread.read()
-        y = np.array([bmi])
 
-        plt.pie(y)
-        plt.show()
-
-bmi_values=[]
-
+    f, a = plt.subplots()
+    a.pie(sizes, labels=labels, autopct='%1.1f%%', wedgeprops={'edgecolor': 'black'},startangle=90)
+    plt.title('BMI categories percentages')
+    plt.show()
 
 
 window = tkinter.Tk()
@@ -49,7 +58,7 @@ window.title('BMI calculator')
 frame = tkinter.Frame(window)
 frame.pack()
 
-userinfoframe = tkinter.LabelFrame(frame, text='User information')  #title gral.
+userinfoframe = tkinter.LabelFrame(frame, text='User information')
 userinfoframe.grid(row=0, column=0)
 
 fnamelabel = tkinter.Label(userinfoframe, text='First Name: ')
@@ -73,12 +82,7 @@ weightentry = tkinter.Entry(userinfoframe)
 weightentry.grid(row=1, column=3)
 
 
-bmibutton = tkinter.Button(frame, text='Calculate', command = bmi_calculator)
+bmibutton = tkinter.Button(frame, text='Calculate', command = calculate_bmi)
 bmibutton.grid(row = 3,column = 0)
-
-#chartbutton = tkinter.Button(frame, text='Pie Chart', command = pie_chart)
-#chartbutton.grid(row = 4,column = 0)
-
-
 
 window.mainloop()
