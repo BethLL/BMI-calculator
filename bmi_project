@@ -1,9 +1,7 @@
-
 import tkinter
 import matplotlib.pyplot as plt
 from tkinter import messagebox
 from collections import Counter
-
 
 def calculate_bmi():
     weight = weightentry.get()
@@ -11,7 +9,6 @@ def calculate_bmi():
     fname = fnameentry.get()
     age = agespinbox.get()
 
-    #global bmi_values
 
     bmi = (float(weight) / (float(height)**2))
     if bmi < 18.5:
@@ -47,9 +44,11 @@ def calculate_bmi():
 
 
     f, a = plt.subplots()
-    a.pie(sizes, labels=labels, autopct='%1.1f%%', wedgeprops={'edgecolor': 'black'},startangle=90)
+    colors = ['#4F6272', '#B7C3F3', '#DD7596', '#8EB897', '#FFD700']
+    a.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', wedgeprops={'edgecolor': 'black'},startangle=90)
     plt.title('BMI categories percentages')
     plt.show()
+
 
 
 window = tkinter.Tk()
@@ -84,5 +83,6 @@ weightentry.grid(row=1, column=3)
 
 bmibutton = tkinter.Button(frame, text='Calculate', command = calculate_bmi)
 bmibutton.grid(row = 3,column = 0)
+
 
 window.mainloop()
